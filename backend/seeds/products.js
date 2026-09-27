@@ -1,4 +1,4 @@
-import { sql } from "../config/db.js";
+import { client, connectToPostgres } from "../config/db.js";
 
 const SAMPLE_PRODUCTS = [
   {
@@ -53,22 +53,41 @@ const SAMPLE_PRODUCTS = [
 
 async function seedDatabase() {
   try {
-    // first, clear existing data
-    await sql`TRUNCATE TABLE products RESTART IDENTITY`;
+    // Connect to PostgreSQL
+    await connectToPostgres();
 
-    // insert all products
+    // Clear existing data
+    await client.query(`
+      TRUNCATE TABLE products RESTART IDENTITY
+    `);
+
+    // Insert products
     for (const product of SAMPLE_PRODUCTS) {
-      await sql`
+      await client.query(
+        `
         INSERT INTO products (name, price, image)
-        VALUES (${product.name}, ${product.price}, ${product.image})
-      `;
+        VALUES ($1, $2, $3)
+        `,
+        [product.name, product.price, product.image]
+      );
     }
 
     console.log("Database seeded successfully");
-    process.exit(0); // success code
+
+    // Close connection
+    await client.end();
+
+    process.exit(0);
   } catch (error) {
     console.error("Error seeding database:", error);
-    process.exit(1); // failure code
+
+    try {
+      await client.end();
+    } catch (err) {
+      // Ignore connection close error
+    }
+
+    process.exit(1);
   }
 }
 

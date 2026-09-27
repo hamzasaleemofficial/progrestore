@@ -1,14 +1,67 @@
-import { neon } from "@neondatabase/serverless";
-import dotenv from "dotenv";
+import { Client } from "pg";
+import {
+  SecretsManagerClient,
+  GetSecretValueCommand,
+} from "@aws-sdk/client-secrets-manager";
 
-dotenv.config();
+const secretsClient = new SecretsManagerClient({
+  region: "eu-west-1",
+});
 
-const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
+const secretName = "postgres-testDB";
 
-// creates a SQL connection using our env variables
-export const sql = neon(
-  `postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?sslmode=require`
-);
-// this sql function we export is used as a tagged template literal, which allows us to write SQL queries safely
+let client;
 
-// postgresql://neondb_owner:npg_NW8olSOGfx5E@ep-dawn-meadow-a83i0d05-pooler.eastus2.azure.neon.tech/neondb?sslmode=require
+async function connectToPostgres() {
+  try {
+    const response = await secretsClient.send(
+      new GetSecretValueCommand({
+        SecretId: secretName,
+        VersionStage: "AWSCURRENT",
+      })
+    );
+
+    const secret = JSON.parse(response.SecretString);
+
+    // console.log("Secret retrieved successfully");
+    // console.log("Database host:", secret.host);
+    // console.log("Database:", secret.dbname);
+    // console.log("User:", secret.username);
+    // console.log ("Password", secret.password);
+
+    client = new Client({
+      user: secret.username,
+      host: secret.host,
+      database: secret.dbname,
+      password: secret.password,
+      port: Number(secret.port),
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    await client.connect();
+
+    console.log("Connected to PostgreSQL");
+  } catch (error) {
+    console.error("Error connecting to PostgreSQL:", error);
+    throw error;
+  }
+}
+
+async function disconnectFromPostgres() {
+  try {
+    if (client) {
+      await client.end();
+      console.log("Disconnected from PostgreSQL");
+    }
+  } catch (error) {
+    console.error("Error disconnecting from PostgreSQL:", error);
+  }
+}
+
+export {
+  client,
+  connectToPostgres,
+  disconnectFromPostgres,
+};
