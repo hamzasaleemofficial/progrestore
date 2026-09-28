@@ -14,10 +14,10 @@ jobs:
    
     steps:
 
-      - name: Debug OIDC
-        uses: github/actions-oidc-debugger@main
-        with:
-          audience: sts.amazonaws.com.cn
+      # - name: Debug OIDC
+      #   uses: github/actions-oidc-debugger@main
+      #   with:
+      #     audience: sts.amazonaws.com.cn
         
        
       - name: Configure AWS credentials using OIDC
