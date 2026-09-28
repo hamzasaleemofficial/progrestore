@@ -14,11 +14,14 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-      - name: Configure AWS credentials
+        # with:
+        #   ref: dev
+      - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_IM_ROLE }}
           aws-region: eu-west-1
+          role-to-assume: ${{ secrets.AWS_IM_ROLE }}
+          
 
       - name: Verify AWS identity
         run: aws sts get-caller-identity
