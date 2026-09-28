@@ -1,33 +1,32 @@
-name: OIDC Debug
+name: Test AWS OIDC
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [dev]
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  oidc-debug:
-    runs-on: ubuntu-latest
-
+  oidc-test:
+    runs-on: [ubuntu-latest]
+   
     steps:
-      - name: Get OIDC token
-        env:
-          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          RESPONSE=$(curl -sS \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL")
 
-          TOKEN=$(echo "$RESPONSE" | jq -r '.value')
+      - name: Debug OIDC
+        uses: github/actions-oidc-debugger@main
+        with:
+          audience: sts.amazonaws.com.cn
+        
+       
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          audience: sts.amazonaws.com.cn
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::322056173622:role/GitHubActions-Terraform-Dev
+          
 
-          echo "$TOKEN" | cut -d '.' -f2 | base64 -d 2>/dev/null | jq '{
-            iss,
-            sub,
-            aud,
-            repository,
-            repository_owner,
-            ref,
-            event_name
-          }'
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
