@@ -1,5 +1,5 @@
 # Stage 1: Install dependencies
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /backend
 
@@ -10,7 +10,7 @@ RUN npm ci
 COPY . .
 
 # Stage 2: Production image
-FROM node:22-alpine
+FROM node:24-alpine
 
 WORKDIR /backend
 
