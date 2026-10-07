@@ -38,6 +38,39 @@ jobs:
             --repository-names dev-frontend dev-backend \
             --region eu-west-1
 
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> "$GITHUB_ENV"
+
+      - name: Build frontend image
+        run: |
+          docker build \
+            -t 322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-frontend:${{ github.sha }} \
+            ./frontend
+
+      - name: Build backend image
+        run: |
+          docker build \
+            -t 322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-backend:${{ github.sha }} \
+            ./backend
+
+      - name: Scan frontend image with Trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-frontend:${{ github.sha }}
+          format: table
+          exit-code: 1
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+
+      - name: Scan backend image with Trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-backend:${{ github.sha }}
+          format: table
+          exit-code: 1
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
