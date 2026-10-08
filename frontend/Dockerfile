@@ -1,3 +1,4 @@
+# Stage 1: Build
 FROM node:24-alpine AS build
 
 WORKDIR /frontend
@@ -11,6 +12,7 @@ COPY . .
 RUN npm run build
 
 
+# Stage 2: Production
 FROM node:24-alpine AS production
 
 WORKDIR /app
@@ -18,7 +20,10 @@ WORKDIR /app
 COPY --from=build /frontend/dist ./dist
 COPY server.js .
 
-RUN node --version && npm --version
+# npm is not required at runtime
+RUN rm -rf /usr/local/lib/node_modules/npm \
+           /usr/local/bin/npm \
+           /usr/local/bin/npx
 
 EXPOSE 5173
 
