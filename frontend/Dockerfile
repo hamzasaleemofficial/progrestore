@@ -10,7 +10,7 @@ COPY . .
 
 RUN npm run build
 
-RUN npm install -g serve
+RUN npm install -g serve@latest
 
 EXPOSE 5173
 
