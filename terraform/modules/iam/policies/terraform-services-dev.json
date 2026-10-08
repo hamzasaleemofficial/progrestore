@@ -18,6 +18,13 @@
     {
       "Effect": "Allow",
       "Action": [
+        "iam:GetOpenIDConnectProvider"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "iam:DeleteRole",
         "iam:GetRole",
         "iam:UpdateRole",
@@ -35,6 +42,13 @@
       "Effect": "Allow",
       "Action": [
         "cloudfront:CreateDistribution"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:ListCachePolicies"
       ],
       "Resource": "*"
     },
@@ -77,6 +91,13 @@
     {
       "Effect": "Allow",
       "Action": [
+        "wafv2:ListTagsForResource"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "wafv2:GetWebACL",
         "wafv2:UpdateWebACL",
         "wafv2:DeleteWebACL",
@@ -101,7 +122,8 @@
       "Effect": "Allow",
       "Action": [
         "route53:ListResourceRecordSets",
-        "route53:ChangeResourceRecordSets"
+        "route53:ChangeResourceRecordSets",
+        "route53:ListTagsForResource"
       ],
       "Resource": ${route53_zone_arns}
     },
@@ -145,6 +167,7 @@
         "secretsmanager:DeleteSecret",
         "secretsmanager:RestoreSecret",
         "secretsmanager:DescribeSecret",
+        "secretsmanager:GetResourcePolicy",
         "secretsmanager:PutSecretValue",
         "secretsmanager:UpdateSecret",
         "secretsmanager:TagResource",
