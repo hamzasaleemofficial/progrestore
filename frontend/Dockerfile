@@ -16,8 +16,8 @@ WORKDIR /app
 
 COPY --from=build /frontend/dist ./dist
 
-RUN npm install -g serve@latest --no-save
+RUN npm install -g http-server
 
 EXPOSE 5173
 
-CMD ["serve", "-s", "dist", "-l", "5173"]
+CMD ["http-server", "dist", "-p", "5173"]
