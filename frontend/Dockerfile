@@ -12,12 +12,14 @@ COPY . .
 RUN npm run build
 
 
-# Stage 2: Production
-FROM node:24-alpine AS production
+# Stage 2: Production with minimal image
+FROM node:24-slim AS production
 
 WORKDIR /app
 
-RUN npm install -g serve@latest
+RUN npm install -g serve@14.2.6 --no-save --legacy-peer-deps && \
+    npm cache clean --force && \
+    rm -rf /root/.npm
 
 COPY --from=build /app/dist ./dist
 
