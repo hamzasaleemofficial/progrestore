@@ -17,7 +17,7 @@ FROM node:24-alpine AS production
 
 WORKDIR /app
 
-RUN npm install
+RUN npm install -g serve@latest
 
 COPY --from=build /app/dist ./dist
 
