@@ -16,7 +16,7 @@ WORKDIR /app
 
 COPY --from=build /frontend/dist ./dist
 
-RUN npm install -g serve@14.2.6 --no-save
+RUN npm install -g serve@latest --no-save
 
 EXPOSE 5173
 
