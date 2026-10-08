@@ -1,4 +1,5 @@
-FROM node:24-alpine
+# Stage 1: Build
+FROM node:24-alpine AS build
 
 WORKDIR /app
 
@@ -10,7 +11,15 @@ COPY . .
 
 RUN npm run build
 
-RUN npm install -g serve@latest
+
+# Stage 2: Production
+FROM node:24-alpine AS production
+
+WORKDIR /app
+
+RUN npm install
+
+COPY --from=build /app/dist ./dist
 
 EXPOSE 5173
 
