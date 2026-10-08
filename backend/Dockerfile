@@ -1,22 +1,21 @@
-# Stage 1: Install dependencies
-FROM node:24-alpine AS builder
+FROM node:24-alpine AS dependencies
 
 WORKDIR /backend
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci --omit=dev
 
-COPY . .
-
-# Stage 2: Production image
-FROM node:24-alpine
+FROM node:24-alpine AS production
 
 WORKDIR /backend
 
-COPY --from=builder /backend ./
+COPY --from=dependencies /backend/node_modules ./node_modules
+COPY . .
 
-RUN npm prune --omit=dev
+RUN rm -rf /usr/local/lib/node_modules/npm \
+           /usr/local/bin/npm \
+           /usr/local/bin/npx
 
 EXPOSE 5000
 
