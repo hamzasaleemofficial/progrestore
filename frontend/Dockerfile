@@ -18,6 +18,8 @@ WORKDIR /app
 COPY --from=build /frontend/dist ./dist
 COPY server.js .
 
+RUN node --version && npm --version
+
 EXPOSE 5173
 
 CMD ["node", "server.js"]
