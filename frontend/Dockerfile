@@ -16,9 +16,8 @@ FROM node:24-alpine AS production
 WORKDIR /app
 
 COPY --from=build /frontend/dist ./dist
-
-RUN npm install -g serve@14.2.6 --no-save
+COPY server.js .
 
 EXPOSE 5173
 
-CMD ["serve", "-s", "dist", "-l", "5173"]
+CMD ["node", "server.js"]
