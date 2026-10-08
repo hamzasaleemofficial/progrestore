@@ -1,10 +1,8 @@
-# Stage 1: Build
-FROM node:24-alpine AS build
+FROM node:22-alpine AS build
 
-WORKDIR /app
+WORKDIR /frontend
 
 COPY package*.json ./
-
 RUN npm ci
 
 COPY . .
@@ -12,16 +10,13 @@ COPY . .
 RUN npm run build
 
 
-# Stage 2: Production with Alpine (secure & lightweight)
-FROM node:24-alpine AS production
+FROM node:22-alpine AS production
 
 WORKDIR /app
 
-RUN npm install -g serve@14.2.6 --no-save --legacy-peer-deps && \
-    npm cache clean --force && \
-    rm -rf /root/.npm
+COPY --from=build /frontend/dist ./dist
 
-COPY --from=build /app/dist ./dist
+RUN npm install -g serve@14.2.6 --no-save
 
 EXPOSE 5173
 
