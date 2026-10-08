@@ -19,6 +19,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint frontend
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
@@ -37,9 +58,6 @@ jobs:
           aws ecr describe-repositories \
             --repository-names dev-frontend dev-backend \
             --region eu-west-1
-
-      - name: Set image tag
-        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> "$GITHUB_ENV"
 
       - name: Build frontend image
         run: |
@@ -71,31 +89,12 @@ jobs:
           ignore-unfixed: true
           severity: CRITICAL,HIGH
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
+      - name: Push frontend image
+        run: |
+          docker push \
+            322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-frontend:${{ github.sha }}
 
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm ci
-
-      - name: Lint frontend
-        working-directory: frontend
-        run: npm run lint
-
-      - name: Build frontend
-        working-directory: frontend
-        run: npm run build
-
-      - name: Install backend dependencies
-        working-directory: backend
-        run: npm ci
-
-      - name: Build backend Docker image
-        working-directory: backend
-        run: docker build -t backend-ci .
-
-      - name: Build frontend Docker image
-        working-directory: frontend
-        run: docker build -t frontend-ci .
+      - name: Push backend image
+        run: |
+          docker push \
+            322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-backend:${{ github.sha }}
