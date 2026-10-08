@@ -12,8 +12,8 @@ COPY . .
 RUN npm run build
 
 
-# Stage 2: Production with minimal image
-FROM node:24-slim AS production
+# Stage 2: Production with Alpine (secure & lightweight)
+FROM node:24-alpine AS production
 
 WORKDIR /app
 
