@@ -193,6 +193,17 @@ data "aws_ecs_service" "backend" {
   cluster_arn  = module.ecs.cluster_arn
   service_name = module.ecs.backend_service_name
 }
+
+data "aws_caller_identity" "current" {}
+
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
+
 module "iam" {
   source = "../../modules/iam"
 
@@ -239,10 +250,6 @@ module "iam" {
     module.ecs.backend_task_role_arn
   ]
 
-  iam_policy_arns = [
-    module.iam.policy_arn,
-    module.iam.services_policy_arn
-  ]
 
   secret_arns = [
     module.secrets_manager.application_db_secret_arn
@@ -250,6 +257,11 @@ module "iam" {
 
   cloudfront_distribution_arns = [
     module.cloudfront.distribution_arn
+  ]
+
+  cloudfront_cache_policy_arns = [
+    data.aws_cloudfront_cache_policy.caching_disabled.arn,
+    data.aws_cloudfront_cache_policy.caching_optimized.arn
   ]
 
   waf_web_acl_arns = [
@@ -290,10 +302,10 @@ module "github_oidc" {
 
   environment = "dev"
 
-  terraform_policy_arns = [
-    module.iam.policy_arn,
-    module.iam.services_policy_arn
-  ]
+  iam_policy_arns = {
+    infrastructure = module.iam.policy_arn
+    services       = module.iam.services_policy_arn
+  }
 
   tags = var.tags
 }
