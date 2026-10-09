@@ -3,11 +3,10 @@ variable "environment" {
   type        = string
 }
 
-variable "terraform_policy_arns" {
 
-  description = "ARNs of the Terraform infrastructure IAM policies."
-
-  type = list(string)
+variable "iam_policy_arns" {
+  description = "IAM policy ARNs to attach to the GitHub Actions Terraform role."
+  type        = map(string)
 }
 
 variable "tags" {

@@ -225,7 +225,8 @@
       "Effect": "Allow",
       "Action": [
         "s3:ListBucket",
-        "s3:GetBucketPolicy"
+        "s3:GetBucketPolicy",
+        "s3:GetBucketAcl"
       ],
       "Resource": "${terraform_state_bucket_arn}"
     },

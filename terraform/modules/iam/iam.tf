@@ -35,7 +35,6 @@ module "terraform_policy" {
 
 
 module "terraform_services_policy" {
-
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "6.1.1"
 
@@ -45,11 +44,11 @@ module "terraform_services_policy" {
   policy = templatefile(
     "${path.module}/policies/terraform-services-dev.json",
     {
-
       iam_pass_role_arns = jsonencode(var.iam_pass_role_arns)
       iam_role_arns      = jsonencode(var.iam_role_arns)
 
       cloudfront_distribution_arns = jsonencode(var.cloudfront_distribution_arns)
+      cloudfront_cache_policy_arns = jsonencode(var.cloudfront_cache_policy_arns)
       waf_web_acl_arns             = jsonencode(var.waf_web_acl_arns)
       route53_zone_arns            = jsonencode(var.route53_zone_arns)
       acm_certificate_arns         = jsonencode(var.acm_certificate_arns)

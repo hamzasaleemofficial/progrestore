@@ -31,3 +31,12 @@ dist-ssr
 *.tfplan
 crash.log
 crash.*.log
+.terraform/
+*.tfstate
+*.tfstate.*
+tfplan
+tfplan-*
+*.tfplan
+.env
+*.tfvars
+!example.tfvars

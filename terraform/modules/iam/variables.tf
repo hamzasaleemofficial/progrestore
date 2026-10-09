@@ -220,11 +220,13 @@ variable "terraform_state_bucket_arn" {
 
 }
 
-variable "iam_policy_arns" {
-  description = "ARNs of IAM policies managed by Terraform."
+
+variable "cloudfront_cache_policy_arns" {
+  description = "ARNs of CloudFront cache policies Terraform needs to read."
   type        = list(string)
   default     = []
 }
+
 
 # Tags
 

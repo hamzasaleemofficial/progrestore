@@ -64,11 +64,7 @@ module "github_actions_role" {
 
 
 resource "aws_iam_role_policy_attachment" "terraform_policy" {
-
-  for_each = {
-    infrastructure = var.terraform_policy_arns[0]
-    services       = var.terraform_policy_arns[1]
-  }
+for_each = var.iam_policy_arns
 
   role       = module.github_actions_role.name
   policy_arn = each.value
