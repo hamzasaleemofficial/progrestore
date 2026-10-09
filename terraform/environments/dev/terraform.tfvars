@@ -39,13 +39,21 @@ backup_retention_period = 7
 
 deletion_protection = false
 
-frontend_image  = "322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-frontend:latest"
+frontend_image  = "322056173622.dkr.ecr.eu-west-1.amazonaws.com/react-frontend:a5f82de"
 frontend_cpu    = 256
 frontend_memory = 512
 
-backend_image  = "322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-backend:latest"
+backend_image  = "322056173622.dkr.ecr.eu-west-1.amazonaws.com/node-backend:a5f82de"
 backend_cpu    = 256
 backend_memory = 512
+
+# frontend_image  = "322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-frontend:latest"
+# frontend_cpu    = 256
+# frontend_memory = 512
+
+# backend_image  = "322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-backend:latest"
+# backend_cpu    = 256
+# backend_memory = 512
 
 ecs_frontend_desired_count = 1
 ecs_backend_desired_count  = 1

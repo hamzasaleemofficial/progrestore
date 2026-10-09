@@ -26,7 +26,6 @@
       "Effect": "Allow",
       "Action": [
         "iam:DeleteRole",
-        "iam:GetRole",
         "iam:UpdateRole",
         "iam:UpdateAssumeRolePolicy",
         "iam:AttachRolePolicy",
@@ -37,6 +36,13 @@
         "iam:UntagRole"
       ],
       "Resource": ${iam_role_arns}
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetRole"
+      ],
+      "Resource": "*"
     },
     {
       "Effect": "Allow",
