@@ -10,6 +10,10 @@ module "vpc" {
   tags = var.tags
 }
 
+data "aws_db_subnet_group" "vpc" {
+  name = module.vpc.database_subnet_group_name
+}
+
 module "security_groups" {
   source = "../../modules/security-groups"
 
@@ -277,7 +281,8 @@ module "iam" {
   ]
 
   rds_subnet_group_arns = [
-    module.rds.db_subnet_group_arn
+    module.rds.db_subnet_group_arn,
+    data.aws_db_subnet_group.vpc.arn
   ]
 
   ecs_cluster_arns = [

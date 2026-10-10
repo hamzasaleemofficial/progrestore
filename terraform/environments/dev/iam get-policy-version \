@@ -1,0 +1,283 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Statement": [
+                {
+                    "Action": [
+                        "ec2:Describe*"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "ec2:CreateVpc",
+                        "ec2:DeleteVpc",
+                        "ec2:ModifyVpcAttribute",
+                        "ec2:CreateSubnet",
+                        "ec2:DeleteSubnet",
+                        "ec2:ModifySubnetAttribute",
+                        "ec2:CreateRouteTable",
+                        "ec2:DeleteRouteTable",
+                        "ec2:CreateRoute",
+                        "ec2:ReplaceRoute",
+                        "ec2:DeleteRoute",
+                        "ec2:CreateInternetGateway",
+                        "ec2:DeleteInternetGateway",
+                        "ec2:AttachInternetGateway",
+                        "ec2:DetachInternetGateway",
+                        "ec2:CreateVpcEndpoint",
+                        "ec2:DeleteVpcEndpoints",
+                        "ec2:ModifyVpcEndpoint",
+                        "ec2:CreateTags",
+                        "ec2:DeleteTags",
+                        "ec2:CreateSecurityGroup",
+                        "ec2:DeleteSecurityGroup",
+                        "ec2:AuthorizeSecurityGroupIngress",
+                        "ec2:RevokeSecurityGroupIngress",
+                        "ec2:AuthorizeSecurityGroupEgress",
+                        "ec2:RevokeSecurityGroupEgress",
+                        "ec2:UpdateSecurityGroupRuleDescriptionsIngress",
+                        "ec2:UpdateSecurityGroupRuleDescriptionsEgress"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "ecr:GetAuthorizationToken",
+                        "ecr:CreateRepository"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "ecr:DeleteRepository",
+                        "ecr:DescribeRepositories",
+                        "ecr:GetRepositoryPolicy",
+                        "ecr:SetRepositoryPolicy",
+                        "ecr:DeleteRepositoryPolicy",
+                        "ecr:PutImage",
+                        "ecr:BatchDeleteImage",
+                        "ecr:PutImageScanningConfiguration",
+                        "ecr:PutImageTagMutability",
+                        "ecr:InitiateLayerUpload",
+                        "ecr:UploadLayerPart",
+                        "ecr:CompleteLayerUpload",
+                        "ecr:BatchCheckLayerAvailability",
+                        "ecr:ListTagsForResource"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": [
+                        "arn:aws:ecr:eu-west-1:322056173622:repository/dev-frontend",
+                        "arn:aws:ecr:eu-west-1:322056173622:repository/dev-backend"
+                    ]
+                },
+                {
+                    "Action": [
+                        "rds:CreateDBInstance",
+                        "rds:ModifyDBInstance",
+                        "rds:DeleteDBInstance",
+                        "rds:AddTagsToResource",
+                        "rds:RemoveTagsFromResource",
+                        "rds:ListTagsForResource"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": [
+                        "arn:aws:rds:eu-west-1:322056173622:db:dev-postgres"
+                    ]
+                },
+                {
+                    "Action": [
+                        "rds:DescribeDBInstances"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "rds:CreateDBSubnetGroup"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "rds:DescribeDBSubnetGroups"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "rds:ModifyDBSubnetGroup",
+                        "rds:DeleteDBSubnetGroup",
+                        "rds:AddTagsToResource",
+                        "rds:RemoveTagsFromResource",
+                        "rds:ListTagsForResource"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": [
+                        "arn:aws:rds:eu-west-1:322056173622:subgrp:dev-postgres-bcbca9c541d9a653c7313f0ac5"
+                    ]
+                },
+                {
+                    "Action": [
+                        "rds:CreateDBParameterGroup",
+                        "rds:ModifyDBParameterGroup",
+                        "rds:DeleteDBParameterGroup",
+                        "rds:DescribeDBParameterGroups",
+                        "rds:AddTagsToResource",
+                        "rds:RemoveTagsFromResource",
+                        "rds:ListTagsForResource"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": [
+                        "arn:aws:rds:eu-west-1:322056173622:pg:dev-postgres-552ae4dd9f9daa4b9d462a233b"
+                    ]
+                },
+                {
+                    "Action": [
+                        "rds:DescribeDBParameters"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "elasticloadbalancing:DescribeLoadBalancers"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "elasticloadbalancing:DescribeTargetGroups"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "elasticloadbalancing:CreateLoadBalancer",
+                        "elasticloadbalancing:DeleteLoadBalancer",
+                        "elasticloadbalancing:DescribeLoadBalancerAttributes",
+                        "elasticloadbalancing:ModifyLoadBalancerAttributes",
+                        "elasticloadbalancing:SetSecurityGroups"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": [
+                        "arn:aws:elasticloadbalancing:eu-west-1:322056173622:loadbalancer/app/dev-internal-alb/e4d955d9be568c56"
+                    ]
+                },
+                {
+                    "Action": [
+                        "elasticloadbalancing:CreateTargetGroup",
+                        "elasticloadbalancing:DeleteTargetGroup",
+                        "elasticloadbalancing:DescribeTargetGroupAttributes",
+                        "elasticloadbalancing:ModifyTargetGroup",
+                        "elasticloadbalancing:ModifyTargetGroupAttributes"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": [
+                        "arn:aws:elasticloadbalancing:eu-west-1:322056173622:targetgroup/fe-162fc6d38f82b948b7f89e375c/be3c98b2d83beafb",
+                        "arn:aws:elasticloadbalancing:eu-west-1:322056173622:targetgroup/be-5adec632718108b1a25aeb4b76/7b37a81492d55e9e"
+                    ]
+                },
+                {
+                    "Action": [
+                        "elasticloadbalancing:CreateListener",
+                        "elasticloadbalancing:DeleteListener",
+                        "elasticloadbalancing:DescribeListeners",
+                        "elasticloadbalancing:ModifyListener",
+                        "elasticloadbalancing:CreateRule",
+                        "elasticloadbalancing:DeleteRule",
+                        "elasticloadbalancing:DescribeRules",
+                        "elasticloadbalancing:ModifyRule",
+                        "elasticloadbalancing:AddTags",
+                        "elasticloadbalancing:RemoveTags"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "ecs:CreateCluster",
+                        "ecs:DeleteCluster",
+                        "ecs:DescribeClusters",
+                        "ecs:UpdateCluster",
+                        "ecs:ListTagsForResource",
+                        "ecs:TagResource",
+                        "ecs:UntagResource"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": [
+                        "arn:aws:ecs:eu-west-1:322056173622:cluster/dev-ecs-cluster"
+                    ]
+                },
+                {
+                    "Action": [
+                        "ecs:CreateService"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "ecs:UpdateService",
+                        "ecs:DeleteService",
+                        "ecs:DescribeServices",
+                        "ecs:ListTagsForResource",
+                        "ecs:TagResource",
+                        "ecs:UntagResource"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": [
+                        "arn:aws:ecs:eu-west-1:322056173622:service/dev-ecs-cluster/dev-frontend",
+                        "arn:aws:ecs:eu-west-1:322056173622:service/dev-ecs-cluster/dev-backend"
+                    ]
+                },
+                {
+                    "Action": [
+                        "ecs:RegisterTaskDefinition",
+                        "ecs:DeregisterTaskDefinition",
+                        "ecs:DescribeTaskDefinition"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Action": [
+                        "s3:ListBucket",
+                        "s3:GetBucketPolicy",
+                        "s3:GetBucketAcl"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "arn:aws:s3:::dev-postgrestore-terraform-remote-backend"
+                },
+                {
+                    "Action": [
+                        "s3:GetObject",
+                        "s3:PutObject"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "arn:aws:s3:::dev-postgrestore-terraform-remote-backend/terraform.tfstate"
+                },
+                {
+                    "Action": [
+                        "s3:GetObject",
+                        "s3:PutObject",
+                        "s3:DeleteObject"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "arn:aws:s3:::dev-postgrestore-terraform-remote-backend/terraform.tfstate.tflock"
+                }
+            ],
+            "Version": "2012-10-17"
+        },
+        "VersionId": "v6",
+        "IsDefaultVersion": true,
+        "CreateDate": "2026-10-09T21:11:12+00:00"
+    }
+}

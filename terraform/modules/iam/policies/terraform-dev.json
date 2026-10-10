@@ -68,8 +68,7 @@
         "ecr:BatchCheckLayerAvailability",
         "ecr:ListTagsForResource"
       ],
-      "Resource": ${ecr_repository_arns
-      }
+      "Resource": ${ecr_repository_arns}
     },
     {
       "Effect": "Allow",
@@ -81,8 +80,7 @@
         "rds:RemoveTagsFromResource",
         "rds:ListTagsForResource"
       ],
-      "Resource": ${rds_instance_arns
-      }
+      "Resource": ${rds_instance_arns}
     },
     {
       "Effect": "Allow",
@@ -114,8 +112,7 @@
         "rds:RemoveTagsFromResource",
         "rds:ListTagsForResource"
       ],
-      "Resource": ${rds_subnet_group_arns
-      }
+      "Resource": ${rds_subnet_group_arns}
     },
     {
       "Effect": "Allow",
@@ -128,8 +125,7 @@
         "rds:RemoveTagsFromResource",
         "rds:ListTagsForResource"
       ],
-      "Resource": ${rds_parameter_group_arns
-      }
+      "Resource": ${rds_parameter_group_arns}
     },
     {
       "Effect": "Allow",
@@ -157,24 +153,28 @@
       "Action": [
         "elasticloadbalancing:CreateLoadBalancer",
         "elasticloadbalancing:DeleteLoadBalancer",
-        "elasticloadbalancing:DescribeLoadBalancerAttributes",
         "elasticloadbalancing:ModifyLoadBalancerAttributes",
         "elasticloadbalancing:SetSecurityGroups"
       ],
-      "Resource": ${load_balancer_arns
-      }
+      "Resource": ${load_balancer_arns}
     },
     {
       "Effect": "Allow",
       "Action": [
         "elasticloadbalancing:CreateTargetGroup",
         "elasticloadbalancing:DeleteTargetGroup",
-        "elasticloadbalancing:DescribeTargetGroupAttributes",
         "elasticloadbalancing:ModifyTargetGroup",
         "elasticloadbalancing:ModifyTargetGroupAttributes"
       ],
-      "Resource": ${target_group_arns
-      }
+      "Resource": ${target_group_arns}
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+      "elasticloadbalancing:DescribeLoadBalancerAttributes",
+      "elasticloadbalancing:DescribeTargetGroupAttributes"
+      ],
+  "Resource": "*"
     },
     {
       "Effect": "Allow",
@@ -203,8 +203,7 @@
         "ecs:TagResource",
         "ecs:UntagResource"
       ],
-      "Resource": ${ecs_cluster_arns
-      }
+      "Resource": ${ecs_cluster_arns}
     },
     {
       "Effect": "Allow",
@@ -223,8 +222,7 @@
         "ecs:TagResource",
         "ecs:UntagResource"
       ],
-      "Resource": ${ecs_service_arns
-      }
+      "Resource": ${ecs_service_arns}
     },
     {
       "Effect": "Allow",
@@ -240,7 +238,8 @@
       "Action": [
         "s3:ListBucket",
         "s3:GetBucketPolicy",
-        "s3:GetBucketAcl"
+        "s3:GetBucketAcl",
+        "s3:GetBucketCORS"
       ],
       "Resource": "${terraform_state_bucket_arn}"
     },
@@ -260,6 +259,13 @@
         "s3:DeleteObject"
       ],
       "Resource": "${terraform_state_bucket_arn}/terraform.tfstate.tflock"
-    }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+      "iam:ListRolePolicies"
+      ],
+      "Resource": "*"
+}
   ]
 }

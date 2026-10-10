@@ -23,3 +23,9 @@ output "internet_gateway_id" {
   description = "Internet Gateway ID"
 }
 
+
+
+output "database_subnet_group_name" {
+  description = "Name of the VPC database subnet group"
+  value       = module.vpc.database_subnet_group_name
+}
