@@ -46,7 +46,7 @@ deletion_protection = false
 # backend_image  = "322056173622.dkr.ecr.eu-west-1.amazonaws.com/node-backend:a5f82de"
 # backend_cpu    = 256
 # backend_memory = 512
- 
+
 frontend_image  = "322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-frontend:latest"
 frontend_cpu    = 256
 frontend_memory = 512

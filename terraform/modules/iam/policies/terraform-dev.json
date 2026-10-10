@@ -172,7 +172,8 @@
       "Effect": "Allow",
       "Action": [
       "elasticloadbalancing:DescribeLoadBalancerAttributes",
-      "elasticloadbalancing:DescribeTargetGroupAttributes"
+      "elasticloadbalancing:DescribeTargetGroupAttributes",
+      "elasticloadbalancing:DescribeTags"
       ],
   "Resource": "*"
     },
@@ -239,7 +240,8 @@
         "s3:ListBucket",
         "s3:GetBucketPolicy",
         "s3:GetBucketAcl",
-        "s3:GetBucketCORS"
+        "s3:GetBucketCORS",
+        "s3:GetBucketWebsite"
       ],
       "Resource": "${terraform_state_bucket_arn}"
     },
@@ -263,7 +265,8 @@
     {
       "Effect": "Allow",
       "Action": [
-      "iam:ListRolePolicies"
+      "iam:ListRolePolicies",
+      "iam:ListAttachedRolePolicies"
       ],
       "Resource": "*"
 }
