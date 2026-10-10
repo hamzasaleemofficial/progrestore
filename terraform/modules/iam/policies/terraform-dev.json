@@ -173,9 +173,10 @@
       "Action": [
       "elasticloadbalancing:DescribeLoadBalancerAttributes",
       "elasticloadbalancing:DescribeTargetGroupAttributes",
+      "elasticloadbalancing:DescribeListenerAttributes",
       "elasticloadbalancing:DescribeTags"
       ],
-  "Resource": "*"
+      "Resource": "*"
     },
     {
       "Effect": "Allow",
@@ -190,6 +191,13 @@
         "elasticloadbalancing:ModifyRule",
         "elasticloadbalancing:AddTags",
         "elasticloadbalancing:RemoveTags"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+      "cloudfront:ListTagsForResource"
       ],
       "Resource": "*"
     },
@@ -241,7 +249,8 @@
         "s3:GetBucketPolicy",
         "s3:GetBucketAcl",
         "s3:GetBucketCORS",
-        "s3:GetBucketWebsite"
+        "s3:GetBucketWebsite",
+        "s3:GetBucketVersioning"
       ],
       "Resource": "${terraform_state_bucket_arn}"
     },
@@ -266,7 +275,8 @@
       "Effect": "Allow",
       "Action": [
       "iam:ListRolePolicies",
-      "iam:ListAttachedRolePolicies"
+      "iam:ListAttachedRolePolicies",
+      "iam:GetPolicy"
       ],
       "Resource": "*"
 }
