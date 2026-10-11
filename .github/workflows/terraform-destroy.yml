@@ -1,0 +1,71 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select the Terraform environment to destroy"
+        required: true
+        type: choice
+        options:
+          - dev
+          - stag
+          - prod
+
+      confirm_destroy:
+        description: "Type DESTROY to confirm"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform-destroy:
+    name: Destroy ${{ inputs.environment }} infrastructure
+    runs-on: ubuntu-24.04
+
+    # Uses the GitHub Environment selected when running the workflow.
+    environment: ${{ inputs.environment }}
+
+    if: ${{ inputs.confirm_destroy == 'DESTROY' }}
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform/environments/${{ inputs.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: eu-west-1
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Generate Destroy Plan
+        run: terraform plan -destroy -input=false -out=destroy.tfplan
+
+      - name: Display Destroy Plan
+        run: terraform show -no-color destroy.tfplan
+
+      - name: Destroy Infrastructure
+        run: terraform apply -input=false -auto-approve destroy.tfplan
+
+      - name: Confirm Destruction
+        run: echo "Terraform destroy completed for ${{ inputs.environment }}."
