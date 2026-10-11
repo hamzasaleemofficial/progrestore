@@ -7,7 +7,7 @@ module "terraform_policy" {
   description = "Terraform infrastructure permissions to manage ${var.environment} core infrastructure."
 
   policy = templatefile(
-    "${path.module}/policies/terraform-dev.json",
+    "${path.module}/policies/terraform-stag.json",
     {
       ecr_repository_arns = jsonencode(var.ecr_repository_arns)
 
@@ -42,7 +42,7 @@ module "terraform_services_policy" {
   description = "Terraform permissions to manage ${var.environment} AWS service integrations."
 
   policy = templatefile(
-    "${path.module}/policies/terraform-services-dev.json",
+    "${path.module}/policies/terraform-services-stag.json",
     {
       iam_pass_role_arns = jsonencode(var.iam_pass_role_arns)
       iam_role_arns      = jsonencode(var.iam_role_arns)

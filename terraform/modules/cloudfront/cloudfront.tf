@@ -2,8 +2,9 @@ module "cloudfront" {
   source  = "terraform-aws-modules/cloudfront/aws"
   version = "6.7.1"
 
+  create          = true
   comment = "${var.environment} CloudFront"
-
+  
   enabled         = true
   is_ipv6_enabled = true
 

@@ -52,7 +52,7 @@ module "github_actions_role" {
           variable = "token.actions.githubusercontent.com:sub"
 
           values = [
-            "repo:hamzasaleemofficial@60598687/progrestore@1395617662:ref:refs/heads/dev"
+            "repo:hamzasaleemofficial@60598687/progrestore@1395617662:ref:refs/heads/prod"
           ]
         }
       ]

@@ -305,7 +305,7 @@ module "iam" {
 module "github_oidc" {
   source = "../../modules/github-oidc"
 
-  environment = "dev"
+  environment = var.environment
 
   iam_policy_arns = {
     infrastructure = module.iam.policy_arn
