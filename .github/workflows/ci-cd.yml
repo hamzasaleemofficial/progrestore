@@ -110,5 +110,10 @@ jobs:
         working-directory: terraform/environments/dev
         run: |
           terraform plan \
+            -out=tfplan \
             -var="frontend_image=322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-frontend:${{ github.sha }}" \
             -var="backend_image=322056173622.dkr.ecr.eu-west-1.amazonaws.com/dev-backend:${{ github.sha }}"
+
+      - name: Terraform Apply
+        working-directory: terraform/environments/dev
+        run: terraform apply -auto-approve tfplan
