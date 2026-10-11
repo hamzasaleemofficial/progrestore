@@ -254,7 +254,8 @@
         "s3:GetAccelerateConfiguration",
         "s3:GetBucketRequestPayment",
         "s3:GetBucketLogging",
-        "s3:GetLifecycleConfiguration"
+        "s3:GetLifecycleConfiguration",
+       "s3:GetReplicationConfiguration"
       ],
       "Resource": "${terraform_state_bucket_arn}"
     },
