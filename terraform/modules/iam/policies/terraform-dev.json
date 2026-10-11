@@ -238,7 +238,8 @@
       "Action": [
         "ecs:RegisterTaskDefinition",
         "ecs:DeregisterTaskDefinition",
-        "ecs:DescribeTaskDefinition"
+        "ecs:DescribeTaskDefinition",
+         "ecs:TagResource"
       ],
       "Resource": "*"
     },
