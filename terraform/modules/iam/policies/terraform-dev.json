@@ -252,7 +252,8 @@
         "s3:GetBucketWebsite",
         "s3:GetBucketVersioning",
         "s3:GetAccelerateConfiguration",
-        "s3:GetBucketRequestPayment"
+        "s3:GetBucketRequestPayment",
+        "s3:GetBucketLogging"
       ],
       "Resource": "${terraform_state_bucket_arn}"
     },
