@@ -251,7 +251,8 @@
         "s3:GetBucketCORS",
         "s3:GetBucketWebsite",
         "s3:GetBucketVersioning",
-        "s3:GetAccelerateConfiguration"
+        "s3:GetAccelerateConfiguration",
+        "s3:GetBucketRequestPayment"
       ],
       "Resource": "${terraform_state_bucket_arn}"
     },
@@ -278,7 +279,7 @@
       "iam:ListRolePolicies",
       "iam:ListAttachedRolePolicies",
       "iam:GetPolicy",
-      "iam:GetPolicyVersion" 
+      "iam:GetPolicyVersion"
       ],
       "Resource": "*"
 }
