@@ -26,9 +26,6 @@ jobs:
     name: Destroy ${{ inputs.environment }} infrastructure
     runs-on: ubuntu-24.04
 
-    # Uses the GitHub Environment selected when running the workflow.
-    environment: ${{ inputs.environment }}
-
     if: ${{ inputs.confirm_destroy == 'DESTROY' }}
 
     defaults:
