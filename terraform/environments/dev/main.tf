@@ -12,6 +12,8 @@ module "vpc" {
 
 data "aws_db_subnet_group" "vpc" {
   name = module.vpc.database_subnet_group_name
+  depends_on = module.vpc
+  
 }
 
 module "security_groups" {
