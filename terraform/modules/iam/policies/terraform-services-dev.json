@@ -40,6 +40,13 @@
     {
       "Effect": "Allow",
       "Action": [
+       "iam:DetachRolePolicy"
+      ],
+      "Resource": ${github_actions_role_arn}
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "iam:GetRole"
       ],
       "Resource": "*"

@@ -228,6 +228,11 @@ variable "cloudfront_cache_policy_arns" {
 }
 
 
+variable "github_actions_role_arn" {
+  description = "ARN of the GitHub Actions Terraform role."
+  type        = string
+}
+
 # Tags
 
 variable "tags" {

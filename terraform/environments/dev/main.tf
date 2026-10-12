@@ -12,8 +12,8 @@ module "vpc" {
 
 data "aws_db_subnet_group" "vpc" {
   name = module.vpc.database_subnet_group_name
- 
-  
+
+
 }
 
 module "security_groups" {
@@ -210,6 +210,10 @@ data "aws_cloudfront_cache_policy" "caching_optimized" {
   name = "Managed-CachingOptimized"
 }
 
+data "aws_iam_role" "github_actions_terraform" {
+  name = "GitHubActions-Terraform-dev-7861f6a233e8f36aba6ff02a42"
+}
+
 module "iam" {
   source = "../../modules/iam"
 
@@ -301,7 +305,8 @@ module "iam" {
     module.monitoring.backend_log_group_arn
   ]
 
-  tags = var.tags
+  github_actions_role_arn = data.aws_iam_role.github_actions_terraform.arn
+  tags                    = var.tags
 }
 
 module "github_oidc" {
