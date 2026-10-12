@@ -31,38 +31,46 @@ jobs:
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
-      - name: Inspect S3 lock object
+      - name: Inspect Terraform state and lock objects
         env:
           ENVIRONMENT: ${{ inputs.environment }}
         run: |
           set -euo pipefail
 
           BUCKET="${ENVIRONMENT}-postgrestore-terraform-remote-backend"
-          KEY="terraform.tfstate.tflock"
 
-          echo "Checking s3://${BUCKET}/${KEY}"
+          echo "Checking Terraform state object..."
+
+          aws s3api head-object \
+            --bucket "$BUCKET" \
+            --key terraform.tfstate
+
+          echo ""
+          echo "Checking Terraform lock object..."
 
           if aws s3api head-object \
             --bucket "$BUCKET" \
-            --key "$KEY"; then
-            echo "Lock object exists. No changes have been made."
+            --key terraform.tfstate.tflock; then
+
+            echo "Lock object exists."
+
+            aws s3api get-object \
+              --bucket "$BUCKET" \
+              --key terraform.tfstate.tflock \
+              /tmp/terraform-lock.json
+
+            echo "Lock information:"
+            cat /tmp/terraform-lock.json
+
           else
-            echo "Unable to inspect the lock object."
-            exit 1
+            echo "No lock object found at this key."
           fi
 
-      - name: Read lock information
-        env:
-          ENVIRONMENT: ${{ inputs.environment }}
-        run: |
-          set -euo pipefail
+          echo ""
+          echo "Checking objects in the Terraform backend bucket..."
 
-          BUCKET="${ENVIRONMENT}-postgrestore-terraform-remote-backend"
-
-          aws s3api get-object \
+          aws s3api list-objects-v2 \
             --bucket "$BUCKET" \
-            --key terraform.tfstate.tflock \
-            /tmp/terraform-lock.json
-
-          echo "Terraform lock information:"
-          cat /tmp/terraform-lock.json
+            --prefix terraform.tfstate \
+            --query 'Contents[].{Key:Key,LastModified:LastModified,Size:Size}' \
+            --output table
