@@ -40,7 +40,13 @@
         "ec2:AuthorizeSecurityGroupEgress",
         "ec2:RevokeSecurityGroupEgress",
         "ec2:UpdateSecurityGroupRuleDescriptionsIngress",
-        "ec2:UpdateSecurityGroupRuleDescriptionsEgress"
+        "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
+        "ec2:CreateNetworkAcl",
+        "ec2:DeleteNetworkAcl",
+        "ec2:CreateNetworkAclEntry",
+        "ec2:DeleteNetworkAclEntry",
+        "ec2:ReplaceNetworkAclEntry",
+        "ec2:ReplaceNetworkAclAssociation"
       ],
       "Resource": "*"
     },
@@ -265,7 +271,8 @@
         "s3:PutEncryptionConfiguration",
         "s3:GetBucketTagging",
         "s3:GetBucketObjectLockConfiguration",
-        "s3:GetBucketPublicAccessBlock"
+        "s3:GetBucketPublicAccessBlock",
+        "s3:PutBucketPublicAccessBlock"
 
       ],
       "Resource": "${terraform_state_bucket_arn}"
@@ -293,7 +300,8 @@
       "iam:ListRolePolicies",
       "iam:ListAttachedRolePolicies",
       "iam:GetPolicy",
-      "iam:GetPolicyVersion"
+      "iam:GetPolicyVersion",
+      "iam:ListRolePolicies"
       ],
       "Resource": "*"
 }
