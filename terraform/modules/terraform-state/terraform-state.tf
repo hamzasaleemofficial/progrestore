@@ -5,6 +5,7 @@ module "terraform_state" {
   bucket = "${var.environment}-postgrestore-terraform-remote-backend"
 
   force_destroy = false
+  
 
   versioning = {
     enabled = true
@@ -24,4 +25,12 @@ module "terraform_state" {
   }
 
   tags = var.tags
+
+  removed {
+  from = module.terraform_state
+
+  lifecycle {
+    destroy = false
+  }
+}
 }

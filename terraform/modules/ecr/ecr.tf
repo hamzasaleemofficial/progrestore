@@ -12,7 +12,7 @@ module "frontend" {
 
   create_lifecycle_policy = false
 
-  repository_force_delete = false
+  repository_force_delete = true
 
   tags = var.tags
 }
@@ -32,7 +32,7 @@ module "backend" {
 
   create_lifecycle_policy = false
 
-  repository_force_delete = false
+  repository_force_delete = true
 
   tags = var.tags
 }

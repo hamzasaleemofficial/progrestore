@@ -222,7 +222,8 @@ module "iam" {
   policy_name          = "Terraform-Infrastructure-Dev"
   services_policy_name = "Terraform-Services-Dev"
 
-  terraform_state_bucket_arn = module.terraform_state.bucket_arn
+  # terraform_state_bucket_arn = module.terraform_state.bucket_arn
+ terraform_state_bucket_arn = "arn:aws:s3:::dev-postgrestore-terraform-remote-backend"
 
   ecr_repository_arns = [
     module.ecr.frontend_repository_arn,
@@ -339,9 +340,9 @@ module "monitoring" {
   tags                  = var.tags
 }
 
-module "terraform_state" {
-  source = "../../modules/terraform-state"
+# module "terraform_state" {
+#   source = "../../modules/terraform-state"
 
-  environment = var.environment
-  tags        = var.tags
-}
+#   environment = var.environment
+#   tags        = var.tags
+# }
