@@ -14,7 +14,7 @@
         "iam:CreateRole"
       ],
       "Resource": "*"
-    },
+    },  
     {
       "Effect": "Allow",
       "Action": [
