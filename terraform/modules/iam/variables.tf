@@ -210,6 +210,13 @@ variable "services_policy_name" {
   type = string
 }
 
+variable "network_policy_name" {
+
+  description = "Name of the Terraform network IAM policy."
+
+  type = string
+}
+
 # Terraform Remote State
 
 variable "terraform_state_bucket_arn" {

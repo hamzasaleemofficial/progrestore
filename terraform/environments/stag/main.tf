@@ -247,6 +247,7 @@ module "iam" {
 
   policy_name          = "Terraform-Infrastructure-Stag"
   services_policy_name = "Terraform-Services-Stag"
+  network_policy_name  = "Terraform-Network-Stag"
 
   terraform_state_bucket_arn = module.terraform_state.bucket_arn
   # terraform_state_bucket_arn = "arn:aws:s3:::dev-postgrestore-terraform-remote-backend"
@@ -352,6 +353,7 @@ module "github_oidc" {
   iam_policy_arns = {
     infrastructure = module.iam.policy_arn
     services       = module.iam.services_policy_arn
+    network        = module.iam.network_policy_arn
   }
 
   tags = var.tags

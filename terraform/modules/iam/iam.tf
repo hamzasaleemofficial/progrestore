@@ -57,7 +57,7 @@ module "terraform_services_policy" {
         "arn:aws:iam::${var.aws_account_id}:policy/${var.services_policy_name}"
       )
       infrastructure_policy_arn = jsonencode(
-      "arn:aws:iam::${var.aws_account_id}:policy/${var.policy_name}"
+        "arn:aws:iam::${var.aws_account_id}:policy/${var.policy_name}"
       )
 
       cloudfront_distribution_arns = jsonencode(var.cloudfront_distribution_arns)
@@ -69,6 +69,18 @@ module "terraform_services_policy" {
       log_group_arns               = jsonencode(var.log_group_arns)
     }
   )
+
+  tags = var.tags
+}
+
+module "terraform_network_policy" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
+  version = "6.1.1"
+
+  name        = var.network_policy_name
+  description = "Terraform network permissions for ${var.environment}."
+
+  policy = file("${path.module}/policies/terraform-network-stag.json")
 
   tags = var.tags
 }
