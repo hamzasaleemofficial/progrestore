@@ -127,6 +127,6 @@ jobs:
             -var="frontend_image=${{ steps.images.outputs.frontend }}" \
             -var="backend_image=${{ steps.images.outputs.backend }}"
 
-      # - name: Terraform Apply
-      #   working-directory: terraform/environments/stag
-      #   run: terraform apply -auto-approve stag.tfplan
+      - name: Terraform Apply
+        working-directory: terraform/environments/stag
+        run: terraform apply -auto-approve stag.tfplan
