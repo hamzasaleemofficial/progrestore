@@ -121,6 +121,8 @@ jobs:
         working-directory: terraform/environments/stag
         run: |
           terraform plan \
+            -input=false \
+            -var-file=terraform.tfvars.example \
             -out=stag.tfplan \
             -var="frontend_image=${{ steps.images.outputs.frontend }}" \
             -var="backend_image=${{ steps.images.outputs.backend }}"
