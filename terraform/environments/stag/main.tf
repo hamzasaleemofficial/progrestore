@@ -204,6 +204,8 @@ module "cloudfront" {
 data "aws_caller_identity" "current" {}
 locals {
   github_actions_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GitHubActions-Terraform-${var.environment}"
+
+  database_initializer_execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.environment}-database-initializer-execution-role"
 }
 
 data "aws_cloudfront_cache_policy" "caching_disabled" {
@@ -275,7 +277,7 @@ module "iam" {
     module.ecs.frontend_task_role_arn,
     module.ecs.backend_task_execution_role_arn,
     module.ecs.backend_task_role_arn,
-    module.database_initializer.execution_role_arn
+    local.database_initializer_execution_role_arn
   ]
 
   iam_role_arns = [
@@ -283,7 +285,7 @@ module "iam" {
     module.ecs.frontend_task_role_arn,
     module.ecs.backend_task_execution_role_arn,
     module.ecs.backend_task_role_arn,
-    module.database_initializer.execution_role_arn
+    local.database_initializer_execution_role_arn
   ]
 
 
