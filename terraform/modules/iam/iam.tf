@@ -56,6 +56,9 @@ module "terraform_services_policy" {
       services_policy_arn = jsonencode(
         "arn:aws:iam::${var.aws_account_id}:policy/${var.services_policy_name}"
       )
+      infrastructure_policy_arn = jsonencode(
+      "arn:aws:iam::${var.aws_account_id}:policy/${var.policy_name}"
+      )
 
       cloudfront_distribution_arns = jsonencode(var.cloudfront_distribution_arns)
       cloudfront_cache_policy_arns = jsonencode(var.cloudfront_cache_policy_arns)

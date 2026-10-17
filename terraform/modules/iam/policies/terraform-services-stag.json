@@ -27,7 +27,10 @@
       "Action": [
         "iam:ListPolicyVersions"
       ],
-      "Resource": ${services_policy_arn}
+      "Resource": [
+          ${services_policy_arn},
+          ${infrastructure_policy_arn}
+     ]
     },
     {
       "Effect": "Allow",
