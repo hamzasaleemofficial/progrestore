@@ -45,14 +45,17 @@ module "terraform_services_policy" {
     "${path.module}/policies/terraform-services-stag.json",
     {
       iam_pass_role_arns = jsonencode(var.iam_pass_role_arns)
-        iam_role_arns = jsonencode(
-      concat(
-      var.iam_role_arns,
-      [var.github_actions_role_arn]
+      iam_role_arns = jsonencode(
+        concat(
+          var.iam_role_arns,
+          [var.github_actions_role_arn]
+        )
       )
-    )
 
       github_actions_role_arn = jsonencode(var.github_actions_role_arn)
+      services_policy_arn = jsonencode(
+        "arn:aws:iam::${var.aws_account_id}:policy/${var.services_policy_name}"
+      )
 
       cloudfront_distribution_arns = jsonencode(var.cloudfront_distribution_arns)
       cloudfront_cache_policy_arns = jsonencode(var.cloudfront_cache_policy_arns)

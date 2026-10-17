@@ -25,6 +25,13 @@
     {
       "Effect": "Allow",
       "Action": [
+        "iam:ListPolicyVersions"
+      ],
+      "Resource": ${services_policy_arn}
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "iam:DeleteRole",
         "iam:UpdateRole",
         "iam:UpdateAssumeRolePolicy",

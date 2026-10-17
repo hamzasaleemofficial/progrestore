@@ -234,6 +234,11 @@ variable "github_actions_role_arn" {
   type        = string
 }
 
+variable "aws_account_id" {
+  description = "AWS account ID used to construct IAM policy ARNs."
+  type        = string
+}
+
 # Tags
 
 variable "tags" {

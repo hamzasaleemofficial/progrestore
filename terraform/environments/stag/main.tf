@@ -243,6 +243,7 @@ module "iam" {
   source = "../../modules/iam"
 
   environment = var.environment
+  aws_account_id = data.aws_caller_identity.current.account_id
 
   policy_name          = "Terraform-Infrastructure-Stag"
   services_policy_name = "Terraform-Services-Stag"
@@ -328,6 +329,7 @@ module "iam" {
     "arn:aws:ecs:eu-west-1:${data.aws_caller_identity.current.account_id}:service/${var.environment}-ecs-cluster/${var.environment}-backend"
   ]
 
+  
   # ecs_service_arns = [
   #   data.aws_ecs_service.frontend.arn,
   #   data.aws_ecs_service.backend.arn
