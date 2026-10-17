@@ -1,13 +1,7 @@
 {
   "Version": "2012-10-17",
   "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:Describe*"
-      ],
-      "Resource": "*"
-    },
+
     {
       "Effect": "Allow",
       "Action": [
@@ -19,6 +13,8 @@
         "ec2:ModifySubnetAttribute",
         "ec2:CreateRouteTable",
         "ec2:DeleteRouteTable",
+        "ec2:AssociateRouteTable",
+        "ec2:DisassociateRouteTable",
         "ec2:CreateRoute",
         "ec2:ReplaceRoute",
         "ec2:DeleteRoute",
@@ -38,7 +34,14 @@
         "ec2:AuthorizeSecurityGroupEgress",
         "ec2:RevokeSecurityGroupEgress",
         "ec2:UpdateSecurityGroupRuleDescriptionsIngress",
-        "ec2:UpdateSecurityGroupRuleDescriptionsEgress"
+        "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
+        "ec2:CreateNetworkAcl",
+        "ec2:DeleteNetworkAcl",
+        "ec2:CreateNetworkAclEntry",
+        "ec2:DeleteNetworkAclEntry",
+        "ec2:ReplaceNetworkAclEntry",
+        "ec2:ReplaceNetworkAclAssociation",
+        "ec2:Describe*"
       ],
       "Resource": "*"
     },
@@ -85,21 +88,10 @@
     {
       "Effect": "Allow",
       "Action": [
-        "rds:DescribeDBInstances"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "rds:CreateDBSubnetGroup"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "rds:DescribeDBSubnetGroups"
+        "rds:DescribeDBInstances",
+        "rds:CreateDBSubnetGroup",
+        "rds:DescribeDBSubnetGroups",
+        "rds:DescribeDBParameters"
       ],
       "Resource": "*"
     },
@@ -130,27 +122,6 @@
     {
       "Effect": "Allow",
       "Action": [
-        "rds:DescribeDBParameters"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "elasticloadbalancing:DescribeLoadBalancers"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "elasticloadbalancing:DescribeTargetGroups"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
         "elasticloadbalancing:CreateLoadBalancer",
         "elasticloadbalancing:DeleteLoadBalancer",
         "elasticloadbalancing:ModifyLoadBalancerAttributes",
@@ -171,16 +142,6 @@
     {
       "Effect": "Allow",
       "Action": [
-      "elasticloadbalancing:DescribeLoadBalancerAttributes",
-      "elasticloadbalancing:DescribeTargetGroupAttributes",
-      "elasticloadbalancing:DescribeListenerAttributes",
-      "elasticloadbalancing:DescribeTags"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
         "elasticloadbalancing:CreateListener",
         "elasticloadbalancing:DeleteListener",
         "elasticloadbalancing:DescribeListeners",
@@ -190,7 +151,13 @@
         "elasticloadbalancing:DescribeRules",
         "elasticloadbalancing:ModifyRule",
         "elasticloadbalancing:AddTags",
-        "elasticloadbalancing:RemoveTags"
+        "elasticloadbalancing:RemoveTags",
+        "elasticloadbalancing:DescribeLoadBalancerAttributes",
+        "elasticloadbalancing:DescribeTargetGroupAttributes",
+        "elasticloadbalancing:DescribeListenerAttributes",
+        "elasticloadbalancing:DescribeTags",
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeTargetGroups"
       ],
       "Resource": "*"
     },
@@ -208,6 +175,7 @@
         "ecs:DeleteCluster",
         "ecs:DescribeClusters",
         "ecs:UpdateCluster",
+        "ecs:PutClusterCapacityProviders",
         "ecs:ListTagsForResource",
         "ecs:TagResource",
         "ecs:UntagResource"
@@ -252,15 +220,18 @@
         "s3:GetBucketCORS",
         "s3:GetBucketWebsite",
         "s3:GetBucketVersioning",
+        "s3:PutBucketVersioning",
         "s3:GetAccelerateConfiguration",
         "s3:GetBucketRequestPayment",
         "s3:GetBucketLogging",
         "s3:GetLifecycleConfiguration",
         "s3:GetReplicationConfiguration",
         "s3:GetEncryptionConfiguration",
+        "s3:PutEncryptionConfiguration",
         "s3:GetBucketTagging",
         "s3:GetBucketObjectLockConfiguration",
-        "s3:GetBucketPublicAccessBlock"
+        "s3:GetBucketPublicAccessBlock",
+        "s3:PutBucketPublicAccessBlock"
 
       ],
       "Resource": "${terraform_state_bucket_arn}"
@@ -293,4 +264,4 @@
       "Resource": "*"
 }
   ]
-}  
+}

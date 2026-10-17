@@ -12,7 +12,9 @@ module "vpc" {
 
 data "aws_db_subnet_group" "vpc" {
   name = module.vpc.database_subnet_group_name
-  depends_on = [module.vpc]
+  depends_on = [
+    module.vpc
+  ]
 }
 
 module "security_groups" {
@@ -189,17 +191,20 @@ module "cloudfront" {
   ]
 }
 
-data "aws_ecs_service" "frontend" {
-  cluster_arn  = module.ecs.cluster_arn
-  service_name = module.ecs.frontend_service_name
-}
+# data "aws_ecs_service" "frontend" {
+#   cluster_arn  = module.ecs.cluster_arn
+#   service_name = module.ecs.frontend_service_name
+# }
 
-data "aws_ecs_service" "backend" {
-  cluster_arn  = module.ecs.cluster_arn
-  service_name = module.ecs.backend_service_name
-}
+# data "aws_ecs_service" "backend" {
+#   cluster_arn  = module.ecs.cluster_arn
+#   service_name = module.ecs.backend_service_name
+# }
 
 data "aws_caller_identity" "current" {}
+locals {
+  github_actions_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GitHubActions-Terraform-${var.environment}"
+}
 
 data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
@@ -207,6 +212,29 @@ data "aws_cloudfront_cache_policy" "caching_disabled" {
 
 data "aws_cloudfront_cache_policy" "caching_optimized" {
   name = "Managed-CachingOptimized"
+}
+
+# data "aws_iam_role" "github_actions_terraform" {
+#   name = "GitHubActions-Terraform-dev-7861f6a233e8f36aba6ff02a42"
+# }
+
+module "database_initializer" {
+  source = "../../modules/database-initializer"
+
+  environment = var.environment
+
+  backend_image = var.backend_image
+
+  database_host = module.rds.db_instance_address
+  database_name = var.db_name
+  database_port = module.rds.db_instance_port
+
+  master_user_secret_arn    = module.rds.master_user_secret_arn
+  application_db_secret_arn = module.secrets_manager.application_db_secret_arn
+
+  log_group_name = module.monitoring.backend_log_group_name
+
+  tags = var.tags
 }
 
 module "iam" {
@@ -218,6 +246,7 @@ module "iam" {
   services_policy_name = "Terraform-Services-Stag"
 
   terraform_state_bucket_arn = module.terraform_state.bucket_arn
+  # terraform_state_bucket_arn = "arn:aws:s3:::dev-postgrestore-terraform-remote-backend"
 
   ecr_repository_arns = [
     module.ecr.frontend_repository_arn,
@@ -245,14 +274,16 @@ module "iam" {
     module.ecs.frontend_task_execution_role_arn,
     module.ecs.frontend_task_role_arn,
     module.ecs.backend_task_execution_role_arn,
-    module.ecs.backend_task_role_arn
+    module.ecs.backend_task_role_arn,
+    module.database_initializer.execution_role_arn
   ]
 
   iam_role_arns = [
     module.ecs.frontend_task_execution_role_arn,
     module.ecs.frontend_task_role_arn,
     module.ecs.backend_task_execution_role_arn,
-    module.ecs.backend_task_role_arn
+    module.ecs.backend_task_role_arn,
+    module.database_initializer.execution_role_arn
   ]
 
 
@@ -291,16 +322,22 @@ module "iam" {
   ]
 
   ecs_service_arns = [
-    data.aws_ecs_service.frontend.arn,
-    data.aws_ecs_service.backend.arn
+    "arn:aws:ecs:eu-west-1:${data.aws_caller_identity.current.account_id}:service/${var.environment}-ecs-cluster/${var.environment}-frontend",
+    "arn:aws:ecs:eu-west-1:${data.aws_caller_identity.current.account_id}:service/${var.environment}-ecs-cluster/${var.environment}-backend"
   ]
+
+  # ecs_service_arns = [
+  #   data.aws_ecs_service.frontend.arn,
+  #   data.aws_ecs_service.backend.arn
+  # ]
 
   log_group_arns = [
     module.monitoring.frontend_log_group_arn,
     module.monitoring.backend_log_group_arn
   ]
 
-  tags = var.tags
+  github_actions_role_arn = local.github_actions_role_arn
+  tags                    = var.tags
 }
 
 module "github_oidc" {

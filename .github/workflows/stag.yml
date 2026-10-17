@@ -1,0 +1,130 @@
+name: Staging CI/CD
+
+on:
+  push:
+    branches:
+      - stag
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: eu-west-1
+  AWS_ACCOUNT_ID: "322056173622"
+  FRONTEND_REPOSITORY: stag-frontend
+  BACKEND_REPOSITORY: stag-backend
+
+jobs:
+  deploy:
+    name: Build, Scan and Deploy Staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN_STAG }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Verify staging ECR repositories
+        run: |
+          aws ecr describe-repositories \
+            --repository-names "$FRONTEND_REPOSITORY" "$BACKEND_REPOSITORY" \
+            --region "$AWS_REGION"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint frontend
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Set image tags
+        id: images
+        run: |
+          echo "frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$FRONTEND_REPOSITORY:$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "backend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$BACKEND_REPOSITORY:$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Build frontend image
+        run: |
+          docker build \
+            -t "${{ steps.images.outputs.frontend }}" \
+            ./frontend
+
+      - name: Build backend image
+        run: |
+          docker build \
+            -t "${{ steps.images.outputs.backend }}" \
+            ./backend
+
+      - name: Scan frontend image with Trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ steps.images.outputs.frontend }}
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+
+      - name: Scan backend image with Trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ steps.images.outputs.backend }}
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+
+      - name: Push frontend image
+        run: docker push "${{ steps.images.outputs.frontend }}"
+
+      - name: Push backend image
+        run: docker push "${{ steps.images.outputs.backend }}"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: terraform/environments/stag
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: terraform/environments/stag
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: terraform/environments/stag
+        run: |
+          terraform plan \
+            -out=stag.tfplan \
+            -var="frontend_image=${{ steps.images.outputs.frontend }}" \
+            -var="backend_image=${{ steps.images.outputs.backend }}"
+
+      # - name: Terraform Apply
+      #   working-directory: terraform/environments/stag
+      #   run: terraform apply -auto-approve stag.tfplan

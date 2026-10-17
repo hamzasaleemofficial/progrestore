@@ -12,6 +12,9 @@ module "vpc" {
 
 data "aws_db_subnet_group" "vpc" {
   name = module.vpc.database_subnet_group_name
+  depends_on = [
+    module.vpc
+  ]
 }
 
 module "security_groups" {
@@ -199,6 +202,9 @@ data "aws_ecs_service" "backend" {
 }
 
 data "aws_caller_identity" "current" {}
+locals {
+  github_actions_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GitHubActions-Terraform-${var.environment}"
+}
 
 data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
@@ -207,6 +213,10 @@ data "aws_cloudfront_cache_policy" "caching_disabled" {
 data "aws_cloudfront_cache_policy" "caching_optimized" {
   name = "Managed-CachingOptimized"
 }
+
+# data "aws_iam_role" "github_actions_terraform" {
+#   name = "GitHubActions-Terraform-dev-7861f6a233e8f36aba6ff02a42"
+# }
 
 module "iam" {
   source = "../../modules/iam"
@@ -217,6 +227,7 @@ module "iam" {
   services_policy_name = "Terraform-Services-Dev"
 
   terraform_state_bucket_arn = module.terraform_state.bucket_arn
+  # terraform_state_bucket_arn = "arn:aws:s3:::dev-postgrestore-terraform-remote-backend"
 
   ecr_repository_arns = [
     module.ecr.frontend_repository_arn,
@@ -299,7 +310,8 @@ module "iam" {
     module.monitoring.backend_log_group_arn
   ]
 
-  tags = var.tags
+  github_actions_role_arn = local.github_actions_role_arn
+  tags                    = var.tags
 }
 
 module "github_oidc" {

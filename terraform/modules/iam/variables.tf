@@ -227,6 +227,12 @@ variable "cloudfront_cache_policy_arns" {
   default     = []
 }
 
+# GitHub Actions Terraform Role
+
+variable "github_actions_role_arn" {
+  description = "ARN of the GitHub Actions Terraform IAM role."
+  type        = string
+}
 
 # Tags
 

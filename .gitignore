@@ -1,0 +1,23 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Terraform variable files
+**/terraform.tfvars
+**/terraform.tfvars.json
+
+# Allow safe example files
+!**/terraform.tfvars.example
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Environment secrets
+.env
+.env.*
+!.env.example
