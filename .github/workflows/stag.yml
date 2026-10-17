@@ -130,3 +130,108 @@ jobs:
       - name: Terraform Apply
         working-directory: terraform/environments/stag
         run: terraform apply -auto-approve stag.tfplan
+        
+      - name: Run database provisioning task
+        id: database_init
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ECS_CLUSTER="stag-ecs-cluster"
+          BACKEND_SERVICE="stag-backend"
+          INITIALIZER_TASK="stag-database-initializer"
+
+          echo "Getting network configuration from the backend service..."
+
+          NETWORK_CONFIGURATION=$(aws ecs describe-services \
+            --cluster "$ECS_CLUSTER" \
+            --services "$BACKEND_SERVICE" \
+            --query 'services[0].networkConfiguration' \
+            --output json)
+
+          if [ "$NETWORK_CONFIGURATION" = "null" ] || [ -z "$NETWORK_CONFIGURATION" ]; then
+            echo "ERROR: Could not retrieve backend network configuration."
+            exit 1
+          fi
+
+          echo "Getting initializer task definition..."
+
+          TASK_DEFINITION=$(aws ecs describe-task-definition \
+            --task-definition "$INITIALIZER_TASK" \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+          if [ -z "$TASK_DEFINITION" ] || [ "$TASK_DEFINITION" = "None" ]; then
+            echo "ERROR: Initializer task definition not found."
+            exit 1
+          fi
+
+          echo "Launching one-off database initializer..."
+
+          RUN_RESPONSE=$(aws ecs run-task \
+            --cluster "$ECS_CLUSTER" \
+            --task-definition "$TASK_DEFINITION" \
+            --launch-type FARGATE \
+            --network-configuration "$NETWORK_CONFIGURATION" \
+            --count 1 \
+            --output json)
+
+          echo "$RUN_RESPONSE" | jq .
+
+          FAILURE_COUNT=$(echo "$RUN_RESPONSE" | jq '.failures | length')
+
+          if [ "$FAILURE_COUNT" -gt 0 ]; then
+            echo "ERROR: ECS could not start the initializer task."
+            exit 1
+          fi
+
+          TASK_ARN=$(echo "$RUN_RESPONSE" | jq -r '.tasks[0].taskArn')
+
+          if [ -z "$TASK_ARN" ] || [ "$TASK_ARN" = "null" ]; then
+            echo "ERROR: ECS did not return an initializer task ARN."
+            exit 1
+          fi
+
+          echo "Initializer task: $TASK_ARN"
+          echo "Waiting for database initialization to finish..."
+
+          aws ecs wait tasks-stopped \
+            --cluster "$ECS_CLUSTER" \
+            --tasks "$TASK_ARN"
+
+          TASK_EXIT_CODE=$(aws ecs describe-tasks \
+            --cluster "$ECS_CLUSTER" \
+            --tasks "$TASK_ARN" \
+            --query "tasks[0].containers[?name=='database-initializer'].exitCode | [0]" \
+            --output text)
+
+          echo "Initializer exit code: $TASK_EXIT_CODE"
+
+          if [ "$TASK_EXIT_CODE" != "0" ]; then
+            echo "ERROR: Database initialization failed."
+            aws ecs describe-tasks \
+              --cluster "$ECS_CLUSTER" \
+              --tasks "$TASK_ARN" \
+              --query 'tasks[0].{LastStatus:lastStatus,StopCode:stopCode,StoppedReason:stoppedReason,Containers:containers[*].{Name:name,ExitCode:exitCode,Reason:reason}}' \
+              --output json
+            exit 1
+          fi
+
+          echo "Database initialization succeeded."
+
+      - name: Restart backend after database provisioning
+        run: |
+          set -euo pipefail
+
+          aws ecs update-service \
+            --cluster stag-ecs-cluster \
+            --service stag-backend \
+            --force-new-deployment
+
+          echo "Waiting for the backend service to stabilize..."
+
+          aws ecs wait services-stable \
+            --cluster stag-ecs-cluster \
+            --services stag-backend
+
+          echo "Backend deployment completed."

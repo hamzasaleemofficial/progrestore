@@ -207,7 +207,21 @@
         "ecs:RegisterTaskDefinition",
         "ecs:DeregisterTaskDefinition",
         "ecs:DescribeTaskDefinition",
-         "ecs:TagResource"
+        "ecs:TagResource"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecs:RunTask"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecs:DescribeTasks"
       ],
       "Resource": "*"
     },
